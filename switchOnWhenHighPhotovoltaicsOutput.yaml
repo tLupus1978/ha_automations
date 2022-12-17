@@ -73,21 +73,21 @@ blueprint:
 
     schedule_days:
       name: Run on these days
-      multiline: true
-      default:
-        - sat
-        - fri
-        - thu
-        - wed
-        - tue
-        - mon
-        - sun
       description: >
         Days on which the automation will run.
         Write days in short form, seperates by comma's and/or spaces.
         (i.e.: mon,tue,wed OR thu fri OR sat, sun)
       selector:
-        text:
+        select:
+          multiple: true
+          options:
+            - sat
+            - fri
+            - thu
+            - wed
+            - tue
+            - mon
+            - sun
 
 variables:
   days: !input schedule_days
