@@ -51,7 +51,7 @@ blueprint:
       description: This message is sent when door closed after it was opened before
       default: "Door is closed back again."
       selector:
-        text: "Door is closed back again."
+        text: 
 description: ""
 trigger:
   - platform: state
