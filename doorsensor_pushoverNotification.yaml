@@ -10,22 +10,31 @@ blueprint:
         entity:
           domain: binary_sensor
           device_class: opening
-    openedSinceMinutes:
-      name: Notify after Minutes
-      description: Notify when door is opened for X-Minutes
-      default: 00:03:00
+    openedSinceDuration:
+      name: Notify after
+      description: Notify when door is opened for this duration
+      default:
+        hours: 0
+        minutes: 3
+        seconds: 0
       selector:
         duration: 
-    closeConfirmSeconds:
-      name: Close notification after Seconds
-      description: Notify when door is back again closed after X-Seconds
-      default: 00:00:10
+    closeConfirmDuration:
+      name: Close notification after time
+      description: Notify when door is back again closed after this duration
+      default: 
+        hours: 0
+        minutes: 0
+        seconds: 10
       selector: 
         duration:
-    sendOnDoorOpenedVeryLongHours:
-      name: Door closed very long duration in hours
+    sendOnDoorOpenedVeryLongDuration:
+      name: Door closed very long duration
       description: Notify when e.g. Homeassistant is restarted and process was interrupted. Send notification if we found very long OPEN door.
-      default: 01:00:00
+      default: 
+        hours: 1
+        minutes: 0
+        seconds: 0
       selector: 
         duration:
     messageOpened:
@@ -44,20 +53,14 @@ trigger:
   - platform: state
     entity_id: 
       - !input binaryDoor_sensor
-    for: 
-      hours: 0
-      minutes: 0
-      seconds: 10
+    for: !input openedSinceDuration
     to: "on"
   - type: opened
     platform: device
     device_id: !input binaryDoor_sensor
     entity_id: !input binaryDoor_sensor
     domain: binary_sensor
-    for: 
-      hours: 0
-      minutes: 0
-      seconds: 10
+    for: !input sendOnDoorOpenedVeryLongDuration
 condition: []
 action:
   - if:
@@ -78,10 +81,7 @@ action:
           device_id: !input binaryDoor_sensor
           entity_id: !input binaryDoor_sensor
           domain: binary_sensor
-          for: 
-            hours: 0
-            minutes: 0
-            seconds: 10
+          for: !input closeConfirmDuration
       sequence:
         - delay: !input closeConfirmSeconds
   - service: notify.pushover
