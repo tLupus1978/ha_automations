@@ -90,7 +90,7 @@ trigger:
     device_id: !input motion_sensor
     entity_id: !input motion_sensor
     domain: binary_sensor
-    for: !input: occupied_duration
+    for: !input occupied_duration
 
 condition:
   - type: is_illuminance
