@@ -14,28 +14,31 @@ blueprint:
       name: Notify after Minutes
       description: Notify when door is opened for X-Minutes
       default: 1
-      number: 
-        selector:
+      selector:
+        number: 
           min: 1
           max: 10
+          step: 1
           unit_of_measurement: minutes
     closeConfirmSeconds:
       name: Close notification after Seconds
       description: Notify when door is back again closed after X-Seconds
       default: 10
-      number: 
-        selector:
+      selector: 
+        number:
           min: 5
           max: 50
+          step: 5
           unit_of_measurement: seconds
     sendOnDoorOpenedVeryLongHours:
       name: Door closed very long duration in hours
       description: Notify when e.g. Homeassistant is restarted and process was interrupted. Send notification if we found very long OPEN door.
       default: 1
-      number: 
-        selector:
+      selector: 
+        number:
           min: 1
           max: 10
+          step: 1
           unit_of_measurement: hours
     messageOpened:
       name: Message sent when door is opened longer
