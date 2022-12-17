@@ -56,15 +56,20 @@ trigger:
   - platform: state
     entity_id: 
       - !input binaryDoor_sensor
-    for: !input openedSinceMinutes
-    from: "off"
+    for: 
+      hours: 0
+      minutes: 0
+      seconds: 10
     to: "on"
   - type: opened
     platform: device
     device_id: !input binaryDoor_sensor
     entity_id: !input binaryDoor_sensor
     domain: binary_sensor
-    for: !input sendOnDoorOpenedVeryLongHours
+    for: 
+      hours: 0
+      minutes: 0
+      seconds: 10
 condition: []
 action:
   - if:
@@ -85,7 +90,10 @@ action:
           device_id: !input binaryDoor_sensor
           entity_id: !input binaryDoor_sensor
           domain: binary_sensor
-          for: !input closeConfirmSeconds
+          for: 
+            hours: 0
+            minutes: 0
+            seconds: 10
       sequence:
         - delay: !input closeConfirmSeconds
   - service: notify.pushover
