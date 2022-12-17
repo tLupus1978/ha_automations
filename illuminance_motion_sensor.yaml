@@ -1,0 +1,113 @@
+blueprint:
+  name: Turn on scene based on motion and illuminance.
+  description: >
+    Turn on a scene based on motion detection, and low light level.
+    Required entities:
+      - Motion sensor (single sensor or group)
+      - Target entity (light, switch, scene* or script*)
+      - scene for on
+      - scene for off
+      - Illuminance sensor (sensor in illuminance class)
+      - Illuminance cutoff value  (input_number)
+      - Turn off wait time (input_number defining amount in minutes)
+
+  domain: automation
+  input:
+    motion_sensor:
+      name: Motion Sensor
+      description: This sensor will trigger the turning on of the on scene.
+      selector:
+        entity:
+          device_class: occupancy
+
+    target_on_entity:
+      name: Turn-on scene
+      description: The scene to turn on when the automation is triggered.
+      selector:
+        entity:
+          domain: scene
+
+    target_off_entity:
+      name: Turn-off entity
+      description: This scene will be turned off.
+      default:
+      selector:
+        entity:
+          domain: scene
+
+    illuminance_sensor:
+      name: Illuminance sensor
+      description: This sensor will be used to determine the illumination.
+      default:
+      selector:
+        entity:
+          domain: sensor
+          device_class: illuminance
+
+    illuminance_cutoff:
+      name: Illuminance cutoff value
+      description: This input_number will be used to compare to the current illumination to determine if it is low.
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 500
+  
+    occupied_duration:
+      name: Turn on wait time (how long occupance must be detected)
+      description: How long occupance must be detected
+      default:
+        hours: 0
+        minutes: 0
+        seconds: 3
+      selector:
+        duration:
+
+    no_motion_wait:
+      name: Turn off wait time
+      description: Time how long the scene will be on.
+      default:
+        hours: 0
+        minutes: 0
+        seconds: 55
+      selector:
+        duration:
+
+    wait_before_next:
+      name: Wait time before next trigger
+      description: Wait time before next trigger
+      default:
+        hours: 0
+        minutes: 0
+        seconds: 55
+      selector:
+        duration:
+
+
+trigger:
+  - type: occupied
+    platform: device
+    device_id: !input motion_sensor
+    entity_id: !input motion_sensor
+    domain: binary_sensor
+    for: !input: occupied_duration
+
+condition:
+  - type: is_illuminance
+    condition: device
+    device_id: !input illuminance_sensor
+    entity_id: !input illuminance_sensor
+    domain: sensor
+    below: !input illuminance_cutoff
+action:
+  - service: scene.turn_on
+    target:
+      entity_id: !input target_on_entity
+    metadata: {}
+  - delay: !input no_motion_wait
+  - service: scene.turn_on
+    target:
+      entity_id: !input target_on_entity
+    metadata: {}
+  - delay: !input wait_before_next
+mode: single
