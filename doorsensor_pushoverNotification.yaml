@@ -83,7 +83,7 @@ action:
           domain: binary_sensor
           for: !input closeConfirmDuration
       sequence:
-        - delay: !input closeConfirmSeconds
+        - delay: !input closeConfirmDuration
   - service: notify.pushover
     data:
       message: !input messageClosed
