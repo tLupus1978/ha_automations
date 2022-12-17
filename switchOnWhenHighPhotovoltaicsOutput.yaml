@@ -52,7 +52,7 @@ blueprint:
 
     checkInterval:
       name: Interval to check
-      description: |
+      description: >
         Interval to check the values and do changes (switch on/off).
         /30 means every 30 mins
       default: /30
@@ -77,20 +77,25 @@ blueprint:
         Days on which the automation will run.
         Write days in short form, seperates by comma's and/or spaces.
         (i.e.: mon,tue,wed OR thu fri OR sat, sun)
+      default:
+        - sun
+        - sat
+        - fri
+        - thu
+        - wed
+        - tue
+        - mon
       selector:
         select:
           multiple: true
           options:
+            - sun
             - sat
             - fri
             - thu
             - wed
             - tue
             - mon
-            - sun
-
-variables:
-  days: !input schedule_days
 
 trigger:
   - platform: time_pattern
