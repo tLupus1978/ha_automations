@@ -20,6 +20,7 @@ blueprint:
           max: 10
           step: 1
           mode: slider
+          unit_of_measurement: minutes
     closeConfirmSeconds:
       name: Close notification after Seconds
       description: Notify when door is back again closed after X-Seconds
@@ -30,6 +31,7 @@ blueprint:
           max: 50
           step: 5
           mode: slider
+          unit_of_measurement: seconds
     sendOnDoorOpenedVeryLongHours:
       name: Door closed very long duration in hours
       description: Notify when e.g. Homeassistant is restarted and process was interrupted. Send notification if we found very long OPEN door.
@@ -40,10 +42,11 @@ blueprint:
           max: 10
           step: 1
           mode: slider
+          unit_of_measurement: hours
     messageOpened:
       name: Message sent when door is opened longer
       description: This message is sent when door is opened for a longer time
-      default: Door is opened since {{openedSinceMinutes}}!
+      default: Door is opened since x minutes!
       selector:
         text: 
     messageClosed:
@@ -56,10 +59,7 @@ trigger:
   - platform: state
     entity_id:
       - !input binaryDoor_sensor
-    for:
-      hours: 0
-      minutes: !input openedSinceMinutes
-      seconds: 0
+    for: !input openedSinceMinutes
     from: "off"
     to: "on"
   - type: opened
@@ -67,10 +67,7 @@ trigger:
     device_id: !input binaryDoor_sensor
     entity_id: !input binaryDoor_sensor
     domain: binary_sensor
-    for:
-      hours: !input sendOnDoorOpenedVeryLongHours
-      minutes: 0
-      seconds: 0
+    for: !input sendOnDoorOpenedVeryLongHours
 condition: []
 action:
   - if:
@@ -79,10 +76,6 @@ action:
         device_id: !input binaryDoor_sensor
         entity_id: !input binaryDoor_sensor
         domain: binary_sensor
-        for:
-          hours: 0
-          minutes: 0
-          seconds: 0
     then:
       - service: notify.pushover
         data:
@@ -95,16 +88,9 @@ action:
           device_id: !input binaryDoor_sensor
           entity_id: !input binaryDoor_sensor
           domain: binary_sensor
-          for:
-            hours: 0
-            minutes: 0
-            seconds: !input closeConfirmSeconds
+          for: !input closeConfirmSeconds
       sequence:
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: !input closeConfirmSeconds
-            milliseconds: 0
+        - delay: !input closeConfirmSeconds
   - service: notify.pushover
     data:
       message: !input messageClosed
