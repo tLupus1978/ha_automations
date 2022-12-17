@@ -43,16 +43,15 @@ blueprint:
     messageOpened:
       name: Message sent when door is opened longer
       description: This message is sent when door is opened for a longer time
-      default: "Door is opened since {{openedSinceMinutes}}!"
+      default: Door is opened since {{openedSinceMinutes}}!
       selector:
         text: 
     messageClosed:
       name: Message sent when door is closed back again
       description: This message is sent when door closed after it was opened before
-      default: "Door is closed back again."
+      default: Door is closed back again.
       selector:
         text: 
-description: ""
 trigger:
   - platform: state
     entity_id:
