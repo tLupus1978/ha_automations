@@ -1,0 +1,93 @@
+blueprint:
+  name: Doorsensor Pushover notification
+  description: Send a pushover notification after timeX when door opens and send again notification after time X when door closed  
+  domain: automation
+  input:
+    binaryDoor_sensor:
+      name: Doorn sensor
+      description: This sensor will be used to identify if door is opened or closed
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: opening
+    openedSinceMinutes:
+      number: 
+        min: 1
+        max: 10
+        step: 1
+        mode: "slider"
+    closeConfirmSeconds:
+      number: 
+        min: 10
+        max: 50
+        step: 10
+        mode: "slider"
+    sendOnDoorOpenedVeryLongHours:
+      number: 
+        min: 1
+        max: 10
+        step: 1
+        mode: "slider"
+    messageOpened:
+      text: "Door is opened since {{openedSinceMinutes}}!"
+    messageClosed:
+      text: "Door is closed back again."
+alias: DoorOpened Pushover
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - !input binaryDoor_sensor
+    for:
+      hours: 0
+      minutes: !input openedSinceMinutes
+      seconds: 0
+    from: "off"
+    to: "on"
+  - type: opened
+    platform: device
+    device_id: !input binaryDoor_sensor
+    entity_id: !input binaryDoor_sensor
+    domain: binary_sensor
+    for:
+      hours: !input sendOnDoorOpenedVeryLongHours
+      minutes: 0
+      seconds: 0
+condition: []
+action:
+  - if:
+      - type: is_open
+        condition: device
+        device_id: !input binaryDoor_sensor
+        entity_id: !input binaryDoor_sensor
+        domain: binary_sensor
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 0
+    then:
+      - service: notify.pushover
+        data:
+          message: !input messageOpened
+    else: []
+  - repeat:
+      until:
+        - type: is_not_open
+          condition: device
+          device_id: !input binaryDoor_sensor
+          entity_id: !input binaryDoor_sensor
+          domain: binary_sensor
+          for:
+            hours: 0
+            minutes: 0
+            seconds: !input closeConfirmSeconds
+      sequence:
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: !input closeConfirmSeconds
+            milliseconds: 0
+  - service: notify.pushover
+    data:
+      message: !input messageClosed
+mode: single
