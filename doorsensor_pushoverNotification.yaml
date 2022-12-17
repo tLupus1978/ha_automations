@@ -18,8 +18,6 @@ blueprint:
         selector:
           min: 1
           max: 10
-          step: 1
-          mode: slider
           unit_of_measurement: minutes
     closeConfirmSeconds:
       name: Close notification after Seconds
@@ -29,8 +27,6 @@ blueprint:
         selector:
           min: 5
           max: 50
-          step: 5
-          mode: slider
           unit_of_measurement: seconds
     sendOnDoorOpenedVeryLongHours:
       name: Door closed very long duration in hours
@@ -40,8 +36,6 @@ blueprint:
         selector:
           min: 1
           max: 10
-          step: 1
-          mode: slider
           unit_of_measurement: hours
     messageOpened:
       name: Message sent when door is opened longer
