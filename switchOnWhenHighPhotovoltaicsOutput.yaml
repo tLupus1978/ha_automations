@@ -73,6 +73,7 @@ blueprint:
 
     schedule_days:
       name: Run on these days
+      multiline: true
       default:
         - sat
         - fri
@@ -87,7 +88,6 @@ blueprint:
         (i.e.: mon,tue,wed OR thu fri OR sat, sun)
       selector:
         text:
-          type: week
 
 variables:
   days: !input schedule_days
