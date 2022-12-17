@@ -1,0 +1,147 @@
+blueprint:
+  name: Switch on when high power Photovoltaics
+  description: |
+    Enable/disable switch when high/low Photovoltaics energy. 
+    
+    The switch is used to turn/on/off the device in a certain time-window.
+    This automation is used by me to enable the pool pump only in case the output energy in the house is high enough.
+  domain: automation
+  input:
+    switch_device:
+      name: Switch which will be powered on
+      description: This switch will be powered on/off when high output energy is detected
+      selector:
+        entity:
+          domain: switch
+
+    current_power_output:
+      name: Sensor which provides the power in KWh
+      description: Sensor which provides the power in KWh
+      selector:
+        entity:
+          domain: sensor
+          #device_class: power
+
+    power_minLevelOn:
+      name: Threshold when switch is turned on.
+      default: 1.2
+      selector:
+        number:
+          min: 0.5
+          max: 20.0
+          step: 0.1
+
+    power_LevelOff:
+      name: Threshold when switch is turned on.
+      default: 0.5
+      selector:
+        number:
+          min: 0.1
+          max: 20.0
+          step: 0.1
+
+    runfor_time:
+      name: run for specific time
+      description: Leave the switch enabled for this specific time (if the pv power stays as it is)
+      default:
+        hours: 2
+        minutes: 0
+        seconds: 0
+      selector:
+        duration: 
+
+    checkInterval:
+      name: Interval to check
+      description: |
+        Interval to check the values and do changes (switch on/off).
+        /30 means every 30 mins
+      default: /30
+      selector:
+        text:
+
+    schedule_start:
+      name: Schedule start time
+      description: Automation only runs after this time.
+      selector:
+        time:
+
+    schedule_stop:
+      name: Schedule stop time
+      description: Automation does not run after this time.
+      selector:
+        time:
+
+    schedule_days:
+      name: Run on these days
+      multiline: true
+      default:
+        - sat
+        - fri
+        - thu
+        - wed
+        - tue
+        - mon
+        - sun
+      description: >
+        Days on which the automation will run.
+        Write days in short form, seperates by comma's and/or spaces.
+        (i.e.: mon,tue,wed OR thu fri OR sat, sun)
+      selector:
+        text:
+          type: week
+
+variables:
+  days: !input schedule_days
+
+trigger:
+  - platform: time_pattern
+    minutes: !input checkInterval
+
+condition: []
+action:
+  - if:
+      - condition: and
+        conditions:
+          - condition: numeric_state
+            entity_id: !input current_power_output
+            above: !input power_minLevelOn
+          - condition: device
+            type: is_off
+            device_id: !input switch_device
+            entity_id: !input switch_device
+            domain: switch
+            
+          - condition: time
+            after: !input schedule_start
+            before: !input schedule_stop
+            weekday: !input schedule_days
+    then:
+      - type: turn_on
+        device_id: !input switch_device
+        entity_id: !input switch_device
+        domain: switch
+      - wait_for_trigger: []
+        timeout: !input runfor_time
+      - type: turn_off
+        device_id: !input switch_device
+        entity_id: !input switch_device
+        domain: switch
+    else:
+      - if:
+          - condition: and
+            conditions:
+              - condition: numeric_state
+                entity_id: !input current_power_output
+                below: !input power_LevelOff
+              - condition: device
+                type: is_on
+                device_id: !input switch_device
+                entity_id: !input switch_device
+                domain: switch
+        then:
+          - type: turn_off
+            device_id: !input switch_device
+            entity_id: !input switch_device
+            domain: switch
+mode: parallel
+max: 2
