@@ -54,8 +54,7 @@ blueprint:
         text: 
 trigger:
   - platform: state
-    entity_id:
-      - !input binaryDoor_sensor
+    entity_id: !input binaryDoor_sensor
     for: !input openedSinceMinutes
     from: "off"
     to: "on"
