@@ -15,24 +15,23 @@ blueprint:
         min: 1
         max: 10
         step: 1
-        mode: "slider"
+        mode: slider
     closeConfirmSeconds:
       number: 
         min: 10
         max: 50
         step: 10
-        mode: "slider"
+        mode: slider
     sendOnDoorOpenedVeryLongHours:
       number: 
         min: 1
         max: 10
         step: 1
-        mode: "slider"
+        mode: slider
     messageOpened:
       text: "Door is opened since {{openedSinceMinutes}}!"
     messageClosed:
       text: "Door is closed back again."
-alias: DoorOpened Pushover
 description: ""
 trigger:
   - platform: state
