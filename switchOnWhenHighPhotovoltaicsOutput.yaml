@@ -73,7 +73,6 @@ blueprint:
 
     schedule_days:
       name: Run on these days
-      multiline: true
       default:
         - sat
         - fri
