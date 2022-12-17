@@ -1,0 +1,59 @@
+alias: Haustür offen Pushover
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.haustur_iaszone
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    from: "off"
+    to: "on"
+  - type: opened
+    platform: device
+    device_id: de6eac3773a6616bbdd16df6c2b7bf50
+    entity_id: binary_sensor.haustur_iaszone
+    domain: binary_sensor
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+condition: []
+action:
+  - if:
+      - type: is_open
+        condition: device
+        device_id: de6eac3773a6616bbdd16df6c2b7bf50
+        entity_id: binary_sensor.haustur_iaszone
+        domain: binary_sensor
+        for:
+          hours: 0
+          minutes: 0
+          seconds: 0
+    then:
+      - service: notify.pushover
+        data:
+          message: Haustür ist seit 3 Minuten offen!
+    else: []
+  - repeat:
+      until:
+        - type: is_not_open
+          condition: device
+          device_id: de6eac3773a6616bbdd16df6c2b7bf50
+          entity_id: binary_sensor.haustur_iaszone
+          domain: binary_sensor
+          for:
+            hours: 0
+            minutes: 0
+            seconds: 20
+      sequence:
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 10
+            milliseconds: 0
+  - service: notify.pushover
+    data:
+      message: Haustür ist wieder geschlossen.
+mode: single

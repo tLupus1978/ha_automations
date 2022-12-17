@@ -11,27 +11,47 @@ blueprint:
           domain: binary_sensor
           device_class: opening
     openedSinceMinutes:
+      name: Notify after Minutes
+      description: Notify when door is opened for X-Minutes
+      default: 1
       number: 
-        min: 1
-        max: 10
-        step: 1
-        mode: slider
+        selector:
+          min: 1
+          max: 10
+          step: 1
+          mode: slider
     closeConfirmSeconds:
+      name: Close notification after Seconds
+      description: Notify when door is back again closed after X-Seconds
+      default: 10
       number: 
-        min: 10
-        max: 50
-        step: 10
-        mode: slider
+        selector:
+          min: 5
+          max: 50
+          step: 5
+          mode: slider
     sendOnDoorOpenedVeryLongHours:
+      name: Door closed very long duration in hours
+      description: Notify when e.g. Homeassistant is restarted and process was interrupted. Send notification if we found very long OPEN door.
+      default: 1
       number: 
-        min: 1
-        max: 10
-        step: 1
-        mode: slider
+        selector:
+          min: 1
+          max: 10
+          step: 1
+          mode: slider
     messageOpened:
-      text: "Door is opened since {{openedSinceMinutes}}!"
+      name: Message sent when door is opened longer
+      description: This message is sent when door is opened for a longer time
+      default: "Door is opened since {{openedSinceMinutes}}!"
+      selector:
+        text: 
     messageClosed:
-      text: "Door is closed back again."
+      name: Message sent when door is closed back again
+      description: This message is sent when door closed after it was opened before
+      default: "Door is closed back again."
+      selector:
+        text: "Door is closed back again."
 description: ""
 trigger:
   - platform: state
