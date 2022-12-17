@@ -38,7 +38,7 @@ blueprint:
       selector: 
         duration:
     messageOpened:
-      name: Message sent when door is opened longer
+      name: Message sent when door is opened for longer (see Notify after)
       description: This message is sent when door is opened for a longer time
       default: Door is opened since x minutes!
       selector:
