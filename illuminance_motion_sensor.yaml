@@ -83,7 +83,6 @@ blueprint:
       selector:
         duration:
 
-
 trigger:
   - type: occupied
     platform: device
@@ -91,7 +90,6 @@ trigger:
     entity_id: !input motion_sensor
     domain: binary_sensor
     for: !input occupied_duration
-
 condition:
   - type: is_illuminance
     condition: device
