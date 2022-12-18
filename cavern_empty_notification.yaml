@@ -1,0 +1,59 @@
+blueprint:
+  name: Doorsensor Pushover notification
+  description: Send a pushover notification after timeX when door opens and send again notification after time X when door closed  
+  domain: automation
+  input:
+    cavern_sensor:
+      name: Cavern level sensor %
+      description: This sensor must containt the percentage value of the water level in your cavern
+      selector:
+        entity:
+          domain: sensor
+          state_class: measurement
+
+    cavern_low_level:
+      name: Level which should be treated as low
+      description: The value at which we will send a notification about the cavern level
+      default: 20
+      selector:
+        number: 
+          unit_of_measurement: "%"
+          min: 0
+          max: 100
+
+    cavern_low_duration:
+      name: How long we should ensure that value is not changing
+      description: Some sensors do not always provide constant information
+      default:
+        hours: 0
+        minutes: 3
+        seconds: 0
+      selector:
+        duration: 
+
+    check_frequency_minutes:
+      name: How often we should check the water level (in minutes)
+      description: The frequency we should check the water level if it is above/below a certain level
+        /30 means every 30 mins
+      default: /30
+      selector:
+        text:
+
+variables:
+  cavernName: !input 'cavern_sensor'
+
+trigger:
+  - platform: time_pattern
+    minutes: !input check_frequency_minutes
+condition:
+  - type: is_value
+    condition: device
+    device_id: !input cavern_sensor
+    entity_id: !input cavern_sensor
+    domain: sensor
+    below: !input cavern_low_level
+action:
+  - service: notify.pushover
+    data:
+      message: "Zisterne in '{{ cavernName }}' is getting empty"
+mode: single
