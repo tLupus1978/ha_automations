@@ -1,5 +1,5 @@
 blueprint:
-  name: Doorsensor Pushover notification
+  name: Waterlevel cavern Pushover notification
   description: Send a pushover notification after timeX when door opens and send again notification after time X when door closed  
   domain: automation
   input:
