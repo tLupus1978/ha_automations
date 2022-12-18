@@ -20,12 +20,6 @@ blueprint:
         entity:
           device_class: occupancy
 
-    motion_sensor_sensitivity:
-      name: Motion Sensor sensitivity change action
-      description: This defines what sensitivity action is executed
-      selector:
-        action:
-
     target_on_entity:
       name: Turn-on scene
       description: The scene to turn on when the automation is triggered.
@@ -89,19 +83,6 @@ blueprint:
       selector:
         duration:
 
-    philips_hue_motion_sensitivity:
-      name: Sensitivity of Philips motion sensor
-      default: Lowest
-      selector:
-        select:
-          multiple: false
-          options:
-            - Lowest
-            - Low
-            - Medium
-            - High
-            - Highest
-
 trigger:
   - platform: state
     entity_id:
@@ -117,11 +98,6 @@ condition:
     domain: sensor
     below: !input illuminance_cutoff
 action:
-  - device_id: !input motion_sensor_sensitivity
-    domain: select
-    entity_id: !input motion_sensor_sensitivity
-    type: select_option
-    option: !input philips_hue_motion_sensitivity
   - service: scene.turn_on
     target:
       entity_id: !input target_on_entity
