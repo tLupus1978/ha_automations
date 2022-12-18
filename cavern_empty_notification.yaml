@@ -9,7 +9,6 @@ blueprint:
       selector:
         entity:
           domain: sensor
-          state_class: measurement
 
     cavern_low_level:
       name: Level which should be treated as low
