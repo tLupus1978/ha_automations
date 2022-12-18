@@ -20,6 +20,12 @@ blueprint:
         entity:
           device_class: occupancy
 
+    motion_sensor_sensitivity:
+      name: Motion Sensor sensitivity change action
+      description: This defines what sensitivity action is executed
+      selector:
+        action:
+
     target_on_entity:
       name: Turn-on scene
       description: The scene to turn on when the automation is triggered.
@@ -111,9 +117,9 @@ condition:
     domain: sensor
     below: !input illuminance_cutoff
 action:
-  - device_id: !input motion_sensor
+  - device_id: !input motion_sensor_sensitivity
     domain: select
-    entity_id: !input motion_sensor
+    entity_id: !input motion_sensor_sensitivity
     type: select_option
     option: !input philips_hue_motion_sensitivity
   - service: scene.turn_on
