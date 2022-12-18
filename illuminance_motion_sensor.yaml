@@ -83,12 +83,19 @@ blueprint:
       selector:
         duration:
 
+    philips_hue_motion_sensitivity:
+      name: Sensitivity of Philips motion sensor
+      default: Lowest
+      selector:
+        attribute:
+          entity_id: !input illuminance_sensor
+
 trigger:
-  - type: occupied
-    platform: device
-    device_id: !input motion_sensor
-    entity_id: !input motion_sensor
-    domain: binary_sensor
+  - platform: state
+    entity_id:
+      - !input motion_sensor
+    from: "off"
+    to: "on"
     for: !input occupied_duration
 condition:
   - type: is_illuminance
@@ -98,6 +105,11 @@ condition:
     domain: sensor
     below: !input illuminance_cutoff
 action:
+  - device_id: c3fd85bfb9432c5a5013706ba238d2ef
+    domain: select
+    entity_id: select.melderhof_hue_motion_sensitivity
+    type: select_option
+    option: Lowest
   - service: scene.turn_on
     target:
       entity_id: !input target_on_entity
